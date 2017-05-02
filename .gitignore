@@ -1,5 +1,7 @@
 # handmade config
 wwwroot/lib/
+wwwroot/css/datatables.min.css
+wwwroot/js/datatables.min.js
 
 .vscode/*
 !.vscode/settings.json
