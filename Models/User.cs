@@ -1,0 +1,23 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace ZRdotnetcore.Models
+{
+    public class User
+    {
+        public Guid UserId { get; set; }
+
+        [StringLength(70)]
+        [RegularExpression(@"^[\sa-zA-Z0-9]*$", ErrorMessage = "The field must contain only letters, numbers and spaces.")]
+        public string FullName { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        [RegularExpression(@"^[\sa-zA-Z0-9]*$", ErrorMessage = "The field must contain only letters, numbers and spaces.")]
+        public string Username { get; set; }
+
+        [StringLength(70)]
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+    }
+}

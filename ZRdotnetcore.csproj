@@ -4,6 +4,9 @@
     <UserSecretsId>aspnet-ZRdotnetcore-D174313E-5E4F-4485-84E8-F53E95F833FB</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="wwwroot\css\bootstrap-paper.min.css" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="ZRdotnetcore.db" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup>

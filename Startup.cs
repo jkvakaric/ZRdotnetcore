@@ -7,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ZRdotnetcore.Data;
 using ZRdotnetcore.Models;
+using ZRdotnetcore.Repos;
+using ZRdotnetcore.Repos.Interfaces;
 using ZRdotnetcore.Services;
 
 namespace ZRdotnetcore
@@ -15,16 +17,10 @@ namespace ZRdotnetcore
     {
         public Startup(IHostingEnvironment env)
         {
-            var builder = new ConfigurationBuilder()
+            IConfigurationBuilder builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-            if (env.IsDevelopment())
-            {
-                // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets<Startup>();
-            }
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true);
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
@@ -38,8 +34,11 @@ namespace ZRdotnetcore
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            // Production
+            // services.AddDbContext<ApplicationDbContext>(options =>
+            //     options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(config => config.SignIn.RequireConfirmedEmail = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -47,11 +46,27 @@ namespace ZRdotnetcore
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            // SendGrid email options - contains Mailgun data too
+            // (delete mailgun conf from class after Sendgrid for .NET core is fixed)
+            services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            // Database context classes
+            services.AddDbContext<YoctoDbContext>(options =>
+               options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            // Production
+            // services.AddDbContext<YoctoDbContext>(options =>
+            //     options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            // Repository pattern services
+            services.AddTransient<IUserRepo, UserRepo>();
+
+            // Initialize database service
+            services.AddTransient<DbInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, DbInitializer initializer)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -71,13 +86,12 @@ namespace ZRdotnetcore
 
             app.UseIdentity();
 
-            // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
+            // Seed the database if empty - comment out in production
+            initializer.Seed();
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
