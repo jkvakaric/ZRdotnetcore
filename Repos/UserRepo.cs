@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +16,7 @@ namespace ZRdotnetcore.Repos
             _context = context;
         }
 
-        public User Get(Guid userId)
+        public User Get(string userId)
         {
             User user = _context.Users.Find(userId);
             return user;
@@ -40,9 +39,9 @@ namespace ZRdotnetcore.Repos
             return _context.Users.Any(u => u.Username.Equals(username));
         }
 
-        public List<User> GetUserList(List<Guid> guids)
+        public List<User> GetUserList(List<string> ids)
         {
-            var list = _context.Users.Where(u => guids.Contains(u.UserId))
+            var list = _context.Users.Where(u => ids.Contains(u.UserId))
                 .OrderBy(u => u.Email).ToList();
             return list;
         }
