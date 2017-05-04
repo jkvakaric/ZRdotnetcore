@@ -1,11 +1,11 @@
-using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace ZRdotnetcore.Models
 {
     public class User
     {
-        public Guid UserId { get; set; }
+        public string UserId { get; set; }
 
         [StringLength(70)]
         [RegularExpression(@"^[\sa-zA-Z0-9]*$", ErrorMessage = "The field must contain only letters, numbers and spaces.")]
@@ -19,5 +19,7 @@ namespace ZRdotnetcore.Models
         [StringLength(70)]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        public virtual List<Device> Devices { get; set; }
     }
 }
