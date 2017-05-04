@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -121,7 +120,7 @@ namespace ZRdotnetcore.Controllers
                 IdentityResult result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    var realUser = new User { UserId = Guid.Parse(user.Id), Email = user.Email, Username = model.Username };
+                    var realUser = new User { UserId = user.Id, Email = user.Email, Username = model.Username };
                     _userRepo.Add(realUser);
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=532713
@@ -129,7 +128,7 @@ namespace ZRdotnetcore.Controllers
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Action(nameof(ConfirmEmail), "Account", new { userId = user.Id, code }, HttpContext.Request.Scheme);
                     await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                        $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                        $"Please confirm your account by clicking this <strong><a href='{callbackUrl}'>LINK</a></strong>");
                     // await _signInManager.SignInAsync(user, false);
                     _logger.LogInformation(3, "User created a new account with password.");
                     const string msg = "Check you Email inbox and confirm your account to start using ZRdotnetcore.";
@@ -201,7 +200,7 @@ namespace ZRdotnetcore.Controllers
             var code = await _userManager.GeneratePasswordResetTokenAsync(user);
             var callbackUrl = Url.Action(nameof(ResetPassword), "Account", new { userId = user.Id, code }, HttpContext.Request.Scheme);
             await _emailSender.SendEmailAsync(model.Email, "Reset Password",
-                $"Please reset your password by clicking here: <a href='{callbackUrl}'>link</a>");
+                $"Please reset your password by clicking <strong><a href='{callbackUrl}'>HERE</a></strong>");
             return View("ForgotPasswordConfirmation");
         }
 
