@@ -40,7 +40,7 @@ namespace ZRdotnetcore.Data
             if (!_appContext.Users.Any(u => u.UserName == admin.UserName))
             {
                 var password = new PasswordHasher<ApplicationUser>();
-                var hashed = password.HashPassword(admin, "Adminpwd#15");
+                var hashed = password.HashPassword(admin, "admin15");
                 admin.PasswordHash = hashed;
                 var userStore = new UserStore<ApplicationUser>(_appContext);
                 await userStore.CreateAsync(admin);
@@ -48,7 +48,7 @@ namespace ZRdotnetcore.Data
 
                 var realUser = new User
                 {
-                    UserId = Guid.Parse(admin.Id),
+                    UserId = admin.Id,
                     FullName = "Administrator",
                     Username = "admin",
                     Email = admin.Email
