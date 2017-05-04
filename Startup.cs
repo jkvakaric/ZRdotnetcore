@@ -38,7 +38,12 @@ namespace ZRdotnetcore
             // services.AddDbContext<ApplicationDbContext>(options =>
             //     options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(config => config.SignIn.RequireConfirmedEmail = true)
+            services.AddIdentity<ApplicationUser, IdentityRole>(config =>
+                {
+                    config.SignIn.RequireConfirmedEmail = true;
+                    config.Password.RequireNonAlphanumeric = false;
+                    config.Password.RequireUppercase = false;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -47,8 +52,7 @@ namespace ZRdotnetcore
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
 
-            // SendGrid email options - contains Mailgun data too
-            // (delete mailgun conf from class after Sendgrid for .NET core is fixed)
+            // SendGrid email options
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // Database context classes
@@ -60,6 +64,8 @@ namespace ZRdotnetcore
 
             // Repository pattern services
             services.AddTransient<IUserRepo, UserRepo>();
+            services.AddTransient<IDeviceRepo, DeviceRepo>();
+            services.AddTransient<IReadingsRepo, ReadingsRepo>();
 
             // Initialize database service
             services.AddTransient<DbInitializer>();
