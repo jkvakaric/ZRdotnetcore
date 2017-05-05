@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using ZRdotnetcore.Models;
 using ZRdotnetcore.Models.ManageViewModels;
-using ZRdotnetcore.Services;
+using ZRdotnetcore.Repos.Interfaces;
 
 namespace ZRdotnetcore.Controllers
 {
@@ -15,22 +14,19 @@ namespace ZRdotnetcore.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly string _externalCookieScheme;
-        private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
+        private readonly IUserRepo _userRepo;
 
         public ManageController(
           UserManager<ApplicationUser> userManager,
           SignInManager<ApplicationUser> signInManager,
-          IOptions<IdentityCookieOptions> identityCookieOptions,
-          IEmailSender emailSender,
-          ILoggerFactory loggerFactory)
+          ILoggerFactory loggerFactory,
+          IUserRepo userRepo)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
-            _emailSender = emailSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
+            _userRepo = userRepo;
         }
 
         //
@@ -40,6 +36,7 @@ namespace ZRdotnetcore.Controllers
         {
             ViewData["StatusMessage"] =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
+                : message == ManageMessageId.ChangeInfoSuccess ? "Your info has been changed."
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
 
@@ -52,7 +49,8 @@ namespace ZRdotnetcore.Controllers
                 PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
                 Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+                User = _userRepo.Get(user.Id)
             };
             return View(model);
         }
@@ -87,6 +85,32 @@ namespace ZRdotnetcore.Controllers
             return View(model);
         }
 
+        //
+        // GET: /Manage/ChangeInfo
+        [HttpGet]
+        public IActionResult ChangeInfo()
+        {
+            return View();
+        }
+
+        //
+        // POST: /Manage/ChangeInfo
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeInfo(ChangeInfoViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            ApplicationUser appuser = await GetCurrentUserAsync();
+            if (appuser == null) return RedirectToAction(nameof(Index), new { Message = ManageMessageId.Error });
+
+            User user = _userRepo.Get(GetCurrentUserAsync().Result.Id);
+            user.FullName = model.FullName;
+
+            _userRepo.Update(user);
+            return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangeInfoSuccess });
+        }
+
         #region Helpers
 
         private void AddErrors(IdentityResult result)
@@ -100,6 +124,7 @@ namespace ZRdotnetcore.Controllers
         public enum ManageMessageId
         {
             ChangePasswordSuccess,
+            ChangeInfoSuccess,
             Error
         }
 
