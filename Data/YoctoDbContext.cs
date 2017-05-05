@@ -12,6 +12,11 @@ namespace ZRdotnetcore.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Device> Devices { get; set; }
+        public DbSet<Reading> Readings { get; set; }
+        public DbSet<ReadingType> ReadingTypes { get; set; }
+        public DbSet<DeviceType> DeviceTypes { get; set; }
+        public DbSet<ActiveReading> ActiveReadings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
