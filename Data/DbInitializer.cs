@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -55,6 +56,26 @@ namespace ZRdotnetcore.Data
                 };
 
                 _yoctoContext.Users.Add(realUser);
+            }
+
+            if (!_yoctoContext.DeviceTypes.Any())
+            {
+                var types = new List<DeviceType>
+                {
+                    new DeviceType
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "RPi2",
+                        Description = "Raspberry Pi 2"
+                    },
+                    new DeviceType
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "RPi3",
+                        Description = "Raspberry Pi 3"
+                    }
+                };
+                _yoctoContext.DeviceTypes.AddRange(types);
             }
 
             await _appContext.SaveChangesAsync();

@@ -6,6 +6,7 @@ namespace ZRdotnetcore.Controllers
     {
         //
         // GET: /Home/Index
+        [HttpGet]
         public IActionResult Index(string message)
         {
             ViewData["ConfirmEmailMessage"] = message ?? "";
@@ -14,6 +15,7 @@ namespace ZRdotnetcore.Controllers
 
         //
         // GET: /Home/About
+        [HttpGet]
         public IActionResult About()
         {
             return View();
@@ -21,6 +23,7 @@ namespace ZRdotnetcore.Controllers
 
         //
         // GET: /Home/Error
+        [HttpGet]
         public IActionResult Error()
         {
             return View();

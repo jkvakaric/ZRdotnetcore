@@ -12,5 +12,7 @@ namespace ZRdotnetcore.Repos.Interfaces
         bool CheckHostnameExists(string hostname, string userId);
         List<Device> GetDevices(string userId);
         List<Device> GetDevicesWithReadings(string userId);
+        List<DeviceType> GetDeviceTypesAll();
+        DeviceType GetDeviceType(string deviceTypeId);
     }
 }
