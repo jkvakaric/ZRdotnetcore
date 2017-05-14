@@ -17,20 +17,17 @@ namespace ZRdotnetcore.Controllers
         private readonly ILogger _logger;
         private readonly IDeviceRepo _deviceRepo;
         private readonly IUserRepo _userRepo;
-        private readonly IReadingsRepo _readingsRepo;
 
         public DeviceController(
             UserManager<ApplicationUser> userManager,
             ILoggerFactory loggerFactory,
             IDeviceRepo deviceRepo,
-            IUserRepo userRepo,
-            IReadingsRepo readingsRepo)
+            IUserRepo userRepo)
         {
             _userManager = userManager;
             _logger = loggerFactory.CreateLogger<ManageController>();
             _deviceRepo = deviceRepo;
             _userRepo = userRepo;
-            _readingsRepo = readingsRepo;
         }
 
         //
