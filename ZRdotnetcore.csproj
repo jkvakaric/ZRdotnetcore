@@ -4,25 +4,6 @@
     <UserSecretsId>aspnet-ZRdotnetcore-D174313E-5E4F-4485-84E8-F53E95F833FB</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="wwwroot\css\bootstrap-paper.min.css" />
-    <Content Include="wwwroot\fonts\glyphicons-halflings-regular.eot">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\fonts\glyphicons-halflings-regular.svg">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\fonts\glyphicons-halflings-regular.ttf">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\fonts\glyphicons-halflings-regular.woff">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\fonts\glyphicons-halflings-regular.woff2">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="wwwroot\images\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.4.337" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
@@ -46,11 +27,6 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\" />
-    <Folder Include="Migrations\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>
