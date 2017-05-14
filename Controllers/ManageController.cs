@@ -90,7 +90,11 @@ namespace ZRdotnetcore.Controllers
         [HttpGet]
         public IActionResult ChangeInfo()
         {
-            return View();
+            ChangeInfoViewModel model = new ChangeInfoViewModel
+            {
+                FullName = _userRepo.Get(GetCurrentUserAsync().Result.Id).FullName
+            };
+            return View(model);
         }
 
         //
