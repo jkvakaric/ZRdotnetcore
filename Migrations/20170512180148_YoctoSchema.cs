@@ -55,7 +55,7 @@ namespace ZRdotnetcore.Migrations
                     AddedOn = table.Column<DateTime>(nullable: false),
                     DeviceTypeId = table.Column<string>(nullable: true),
                     Hostname = table.Column<string>(maxLength: 50, nullable: false),
-                    UpdatedOn = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2017, 5, 4, 19, 39, 48, 697, DateTimeKind.Local)),
+                    UpdatedOn = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2017, 5, 12, 20, 1, 47, 373, DateTimeKind.Local)),
                     UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -80,8 +80,12 @@ namespace ZRdotnetcore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    ActiveSince = table.Column<DateTime>(nullable: false),
                     DataFilepath = table.Column<string>(maxLength: 255, nullable: false),
-                    DeviceId = table.Column<string>(nullable: true)
+                    DeviceId = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 70, nullable: false),
+                    OwnerUserId = table.Column<string>(nullable: true),
+                    ReadingTypeId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,6 +96,18 @@ namespace ZRdotnetcore.Migrations
                         principalTable: "Devices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ActiveReadings_Users_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ActiveReadings_ReadingTypes_ReadingTypeId",
+                        column: x => x.ReadingTypeId,
+                        principalTable: "ReadingTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -99,19 +115,34 @@ namespace ZRdotnetcore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    ActiveReadingId = table.Column<string>(nullable: true),
                     DeviceId = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 70, nullable: false),
+                    OwnerUserId = table.Column<string>(nullable: true),
                     ReadValue = table.Column<string>(maxLength: 255, nullable: false),
                     ReadingTypeId = table.Column<string>(nullable: true),
-                    Timestamp = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2017, 5, 4, 19, 39, 48, 713, DateTimeKind.Local))
+                    Timestamp = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2017, 5, 12, 20, 1, 47, 429, DateTimeKind.Local))
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Readings", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Readings_ActiveReadings_ActiveReadingId",
+                        column: x => x.ActiveReadingId,
+                        principalTable: "ActiveReadings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Readings_Devices_DeviceId",
                         column: x => x.DeviceId,
                         principalTable: "Devices",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Readings_Users_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Readings_ReadingTypes_ReadingTypeId",
@@ -127,6 +158,16 @@ namespace ZRdotnetcore.Migrations
                 column: "DeviceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ActiveReadings_OwnerUserId",
+                table: "ActiveReadings",
+                column: "OwnerUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActiveReadings_ReadingTypeId",
+                table: "ActiveReadings",
+                column: "ReadingTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Devices_DeviceTypeId",
                 table: "Devices",
                 column: "DeviceTypeId");
@@ -137,9 +178,19 @@ namespace ZRdotnetcore.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Readings_ActiveReadingId",
+                table: "Readings",
+                column: "ActiveReadingId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Readings_DeviceId",
                 table: "Readings",
                 column: "DeviceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Readings_OwnerUserId",
+                table: "Readings",
+                column: "OwnerUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Readings_ReadingTypeId",
@@ -150,10 +201,10 @@ namespace ZRdotnetcore.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ActiveReadings");
+                name: "Readings");
 
             migrationBuilder.DropTable(
-                name: "Readings");
+                name: "ActiveReadings");
 
             migrationBuilder.DropTable(
                 name: "Devices");

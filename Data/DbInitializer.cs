@@ -65,17 +65,25 @@ namespace ZRdotnetcore.Data
                     new DeviceType
                     {
                         Id = Guid.NewGuid().ToString(),
-                        Name = "RPi2",
-                        Description = "Raspberry Pi 2"
-                    },
-                    new DeviceType
-                    {
-                        Id = Guid.NewGuid().ToString(),
                         Name = "RPi3",
                         Description = "Raspberry Pi 3"
                     }
                 };
                 _yoctoContext.DeviceTypes.AddRange(types);
+            }
+
+            if (!_yoctoContext.ReadingTypes.Any())
+            {
+                var types = new List<ReadingType>
+                {
+                    new ReadingType
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "Temperature OneWire",
+                        Description = "Temperature sensor reading using OneWire protocol."
+                    }
+                };
+                _yoctoContext.ReadingTypes.AddRange(types);
             }
 
             await _appContext.SaveChangesAsync();

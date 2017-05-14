@@ -18,15 +18,29 @@ namespace ZRdotnetcore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("ActiveSince");
+
                     b.Property<string>("DataFilepath")
                         .IsRequired()
                         .HasMaxLength(255);
 
                     b.Property<string>("DeviceId");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(70);
+
+                    b.Property<string>("OwnerUserId");
+
+                    b.Property<string>("ReadingTypeId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DeviceId");
+
+                    b.HasIndex("OwnerUserId");
+
+                    b.HasIndex("ReadingTypeId");
 
                     b.ToTable("ActiveReadings");
                 });
@@ -46,7 +60,7 @@ namespace ZRdotnetcore.Migrations
 
                     b.Property<DateTime>("UpdatedOn")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(new DateTime(2017, 5, 4, 19, 39, 48, 697, DateTimeKind.Local));
+                        .HasDefaultValue(new DateTime(2017, 5, 12, 20, 1, 47, 373, DateTimeKind.Local));
 
                     b.Property<string>("UserId");
 
@@ -81,7 +95,15 @@ namespace ZRdotnetcore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("ActiveReadingId");
+
                     b.Property<string>("DeviceId");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(70);
+
+                    b.Property<string>("OwnerUserId");
 
                     b.Property<string>("ReadValue")
                         .IsRequired()
@@ -91,11 +113,15 @@ namespace ZRdotnetcore.Migrations
 
                     b.Property<DateTime>("Timestamp")
                         .ValueGeneratedOnAdd()
-                        .HasDefaultValue(new DateTime(2017, 5, 4, 19, 39, 48, 713, DateTimeKind.Local));
+                        .HasDefaultValue(new DateTime(2017, 5, 12, 20, 1, 47, 429, DateTimeKind.Local));
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ActiveReadingId");
+
                     b.HasIndex("DeviceId");
+
+                    b.HasIndex("OwnerUserId");
 
                     b.HasIndex("ReadingTypeId");
 
@@ -145,6 +171,14 @@ namespace ZRdotnetcore.Migrations
                     b.HasOne("ZRdotnetcore.Models.Device", "Device")
                         .WithMany("ActiveReadings")
                         .HasForeignKey("DeviceId");
+
+                    b.HasOne("ZRdotnetcore.Models.User", "Owner")
+                        .WithMany("ActiveReadings")
+                        .HasForeignKey("OwnerUserId");
+
+                    b.HasOne("ZRdotnetcore.Models.ReadingType", "ReadingType")
+                        .WithMany("ActiveReadings")
+                        .HasForeignKey("ReadingTypeId");
                 });
 
             modelBuilder.Entity("ZRdotnetcore.Models.Device", b =>
@@ -160,9 +194,17 @@ namespace ZRdotnetcore.Migrations
 
             modelBuilder.Entity("ZRdotnetcore.Models.Reading", b =>
                 {
+                    b.HasOne("ZRdotnetcore.Models.ActiveReading", "ActiveReading")
+                        .WithMany("Readings")
+                        .HasForeignKey("ActiveReadingId");
+
                     b.HasOne("ZRdotnetcore.Models.Device", "Device")
                         .WithMany("Readings")
                         .HasForeignKey("DeviceId");
+
+                    b.HasOne("ZRdotnetcore.Models.User", "Owner")
+                        .WithMany("Readings")
+                        .HasForeignKey("OwnerUserId");
 
                     b.HasOne("ZRdotnetcore.Models.ReadingType", "ReadingType")
                         .WithMany("Readings")

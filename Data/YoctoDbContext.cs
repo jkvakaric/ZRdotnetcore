@@ -26,6 +26,8 @@ namespace ZRdotnetcore.Data
             modelBuilder.Entity<User>().Property(u => u.Username).IsRequired();
             modelBuilder.Entity<User>().Property(u => u.Email).IsRequired();
             modelBuilder.Entity<User>().HasMany(u => u.Devices).WithOne(d => d.User);
+            modelBuilder.Entity<User>().HasMany(u => u.Readings).WithOne(r => r.Owner);
+            modelBuilder.Entity<User>().HasMany(u => u.ActiveReadings).WithOne(ar => ar.Owner);
 
             modelBuilder.Entity<Device>().ToTable("Devices").HasKey(d => d.Id);
             modelBuilder.Entity<Device>().Property(d => d.Hostname).IsRequired();
@@ -34,11 +36,11 @@ namespace ZRdotnetcore.Data
             modelBuilder.Entity<Device>().HasOne(d => d.DeviceType).WithMany(dt => dt.Devices);
             modelBuilder.Entity<Device>().HasMany(d => d.ActiveReadings).WithOne(ar => ar.Device);
             modelBuilder.Entity<Device>().HasMany(d => d.Readings).WithOne(r => r.Device);
-            modelBuilder.Entity<Device>().HasOne(d => d.User).WithMany(u => u.Devices);
 
             modelBuilder.Entity<Reading>().ToTable("Readings").HasKey(r => r.Id);
             modelBuilder.Entity<Reading>().Property(r => r.Timestamp).IsRequired().HasDefaultValue(DateTime.Now);
             modelBuilder.Entity<Reading>().Property(r => r.ReadValue).IsRequired();
+            modelBuilder.Entity<Reading>().HasOne(r => r.ActiveReading).WithMany(ar => ar.Readings);
             modelBuilder.Entity<Reading>().HasOne(r => r.ReadingType).WithMany(rt => rt.Readings);
 
             modelBuilder.Entity<ReadingType>().ToTable("ReadingTypes").HasKey(rt => rt.Id);
@@ -48,7 +50,10 @@ namespace ZRdotnetcore.Data
             modelBuilder.Entity<DeviceType>().Property(dt => dt.Name).IsRequired();
 
             modelBuilder.Entity<ActiveReading>().ToTable("ActiveReadings").HasKey(ar => ar.Id);
+            modelBuilder.Entity<ActiveReading>().Property(ar => ar.Name).IsRequired();
             modelBuilder.Entity<ActiveReading>().Property(ar => ar.DataFilepath).IsRequired();
+            modelBuilder.Entity<ActiveReading>().Property(ar => ar.ActiveSince).IsRequired();
+            modelBuilder.Entity<ActiveReading>().HasOne(ar => ar.ReadingType).WithMany(rt => rt.ActiveReadings);
         }
     }
 }
