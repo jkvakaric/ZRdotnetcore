@@ -21,5 +21,9 @@ namespace ZRdotnetcore.Models
         public string Email { get; set; }
 
         public virtual List<Device> Devices { get; set; }
+
+        public List<Reading> Readings { get; set; }
+
+        public List<ActiveReading> ActiveReadings { get; set; }
     }
 }

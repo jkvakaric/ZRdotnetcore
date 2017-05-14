@@ -17,5 +17,7 @@ namespace ZRdotnetcore.Models
         public string Description { get; set; }
 
         public List<Reading> Readings { get; set; }
+
+        public List<ActiveReading> ActiveReadings { get; set; }
     }
 }

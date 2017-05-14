@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ZRdotnetcore.Models
+namespace ZRdotnetcore.Models.ReadingViewModels
 {
-    public class Reading
+    public class ReadingDeleteFromAllViewModel
     {
         [Required]
         public string Id { get; set; }
@@ -19,13 +19,5 @@ namespace ZRdotnetcore.Models
 
         [StringLength(255)]
         public string ReadValue { get; set; }
-
-        public virtual Device Device { get; set; }
-
-        public virtual ReadingType ReadingType { get; set; }
-
-        public virtual ActiveReading ActiveReading { get; set; }
-
-        public virtual User Owner { get; set; }
     }
 }
