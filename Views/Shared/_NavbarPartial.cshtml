@@ -1,0 +1,8 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <li><a asp-area="" asp-controller="Reading" asp-action="AllFromUser">All Readings</a></li>
+    <li><a asp-area="" asp-controller="Device" asp-action="Index">Devices</a></li>
+    
+}

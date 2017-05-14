@@ -1,7 +1,5 @@
 ﻿@model List<Device>
-@{
-    ViewData["Title"] = "My Devices";
-}
+@{ ViewData["Title"] = "My Devices"; }
 
 <header class="text-center">
     <h2>@ViewData["Title"]</h2>
@@ -32,11 +30,11 @@
     <tbody>
         @foreach (Device device in Model)
         {
-            <tr>
+            <tr id="@device.Id">
                 <td>@device.Hostname</td>
                 <td>@device.AddedOn</td>
                 <td>@device.UpdatedOn</td>
-                <td>@device.DeviceType</td>
+                <td>@device.DeviceType.Name</td>
                 <td>@device.ActiveReadings.Count</td>
             </tr>
         }
@@ -44,17 +42,51 @@
 </table>
 
 <div class="text-center">
-    <a asp-controller="Device" asp-action="Add" class="btn btn-primary">ADD</a>
-    <a asp-controller="Device" asp-action="Edit" class="btn btn-primary">EDIT</a>
-    <a asp-controller="Device" asp-action="Delete" class="btn btn-primary">DELETE</a>
-    <a asp-controller="Device" asp-action="Manage" class="btn btn-primary">MANAGE</a>
+    <a id="devicestbl-add" class="btn btn-primary">ADD</a>
+    <a id="devicestbl-edit" class="btn btn-primary">EDIT</a>
+    <a id="devicestbl-del" class="btn btn-primary">DELETE</a>
+    <a id="devicestbl-info" class="btn btn-primary">INFO</a>
+    <a id="devicestbl-mng" class="btn btn-primary">MANAGE</a>
+    <a id="devicestbl-mng-real-link" hidden></a>
+    <a id="devicestbl-readings" class="btn btn-primary">READINGS</a>
+    <a id="devicestbl-readings-real-link" hidden=""></a>
+</div>
+
+<div id="modal-add-device" aria-hidden="true" aria-labelledby="modal-add-device-label" role="dialog" tabindex="-1" class="modal fade">
+    <div class="modal-dialog">
+        <div id="modal-add-device-content" class="modal-content"></div>
+    </div>
+</div>
+
+<div id="modal-edit-device" aria-hidden="true" aria-labelledby="modal-action-edit-device-label" role="dialog" tabindex="-1" class="modal fade">
+    <div class="modal-dialog">
+        <div id="modal-edit-device-content" class="modal-content"></div>
+    </div>
+</div>
+
+<div id="modal-del-device" aria-hidden="true" aria-labelledby="modal-del-device-label" role="dialog" tabindex="-1" class="modal fade">
+    <div class="modal-dialog">
+        <div id="modal-del-device-content" class="modal-content"></div>
+    </div>
+</div>
+
+<div id="modal-info-device" aria-hidden="true" aria-labelledby="modal-info-device-label" role="dialog" tabindex="-1" class="modal fade">
+    <div class="modal-dialog">
+        <div id="modal-info-device-content" class="modal-content"></div>
+    </div>
 </div>
 
 @section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     @{ await Html.RenderPartialAsync("_DataTablesScriptsPartial"); }
     <script>
         $(document).ready(function () {
-            $('#devicestbl').DataTable({
+            $('#modal-add-device').modal({ show: false });
+            $('#modal-edit-device').modal({ show: false });
+            $('#modal-del-device').modal({ show: false });
+            $('#modal-info-device').modal({ show: false });
+
+            var table = $('#devicestbl').DataTable({
                 language: {
                     search: "_INPUT_",
                     searchPlaceholder: "Search ..."
@@ -62,6 +94,85 @@
                 select: {
                     style: 'single'
                 }
+            });
+
+            $('#devicestbl-add').on('click', function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/Device/Add",
+                    success: function (response) {
+                        $('#modal-add-device-content').html(response);
+                        $('#modal-add-device').modal('show');
+                    }
+                });
+            });
+
+            $('#devicestbl-edit').on('click', function () {
+                var count = table.row('.selected').count();
+                var id = table.row('.selected').id();
+                if (count === 1) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Device/Edit",
+                        data: { deviceId: id },
+                        success: function (response) {
+                            $('#modal-edit-device-content').html(response);
+                            $('#modal-edit-device').modal('show');
+                        }
+                    });
+                } else alert('You must select one row to perform this action!');
+            });
+
+            $('#devicestbl-del').on('click', function () {
+                var count = table.row('.selected').count();
+                var id = table.row('.selected').id();
+                if (count === 1) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Device/Delete",
+                        data: { deviceId: id },
+                        success: function (response) {
+                            $('#modal-del-device-content').html(response);
+                            $('#modal-del-device').modal('show');
+                        }
+                    });
+                } else alert('You must select one row to perform this action!');
+            });
+
+            $('#devicestbl-info').on('click', function () {
+                var count = table.row('.selected').count();
+                var id = table.row('.selected').id();
+                if (count === 1) {
+                    $.ajax({
+                        type: "GET",
+                        url: "/Device/Info",
+                        data: { deviceId: id },
+                        success: function (response) {
+                            $('#modal-info-device-content').html(response);
+                            $('#modal-info-device').modal('show');
+                        }
+                    });
+                } else alert('You must select one row to perform this action!');
+            });
+
+            $('#devicestbl-mng').on('click', function () {
+                var count = table.row('.selected').count();
+                var id = table.row('.selected').id();
+                if (count === 1) {
+                    var link = $('#devicestbl-mng-real-link')[0];
+                    link.href = "/Device/Manage?deviceId=" + id;
+                    link.click();
+                } else alert('You must select one row to perform this action!');
+            });
+
+            $('#devicestbl-readings').on('click', function () {
+                var count = table.row('.selected').count();
+                var id = table.row('.selected').id();
+                if (count === 1) {
+                    var link = $('#devicestbl-readings-real-link')[0];
+                    link.href = "/Device/Readings?deviceId=" + id;
+                    link.click();
+                } else alert('You must select one row to perform this action!');
             });
         });
     </script>
