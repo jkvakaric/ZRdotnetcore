@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ZRdotnetcore.Data;
@@ -21,8 +20,9 @@ namespace ZRdotnetcore.Repos
         {
             Device device = _context.Devices
                 .Include(d => d.User)
-                .Include(d => d.ActiveReadings)
                 .Include(d => d.DeviceType)
+                .Include(d => d.ActiveReadings)
+                    .ThenInclude(ar => ar.ReadingType)
                 .SingleOrDefault(d => deviceId.Equals(d.Id));
             return device;
         }
@@ -34,6 +34,7 @@ namespace ZRdotnetcore.Repos
                 .Include(d => d.ActiveReadings)
                 .Include(d => d.DeviceType)
                 .Include(d => d.Readings)
+                    .ThenInclude(r => r.ReadingType)
                 .SingleOrDefault(d => deviceId.Equals(d.Id));
             return device;
         }
@@ -44,13 +45,15 @@ namespace ZRdotnetcore.Repos
             _context.SaveChanges();
         }
 
-        public void Update(Device device, string userId)
+        public void Update(Device device)
         {
-            if (!device.User.UserId.Equals(userId))
-            {
-                throw new UnauthorizedAccessException();
-            }
             _context.Entry(device).State = EntityState.Modified;
+            _context.SaveChanges();
+        }
+
+        public void Delete(Device device)
+        {
+            _context.Devices.Remove(device);
             _context.SaveChanges();
         }
 
