@@ -66,6 +66,8 @@
 
 <script>
     $(document).ready(function () {
+        $.fn.dataTable.moment('M/D/YYYY H:mm:ss');
+
         $('#arreadstbl').DataTable({
             language: {
                 search: "_INPUT_",

@@ -90,7 +90,7 @@ namespace ZRdotnetcore.Controllers
         [HttpGet]
         public IActionResult ChangeInfo()
         {
-            ChangeInfoViewModel model = new ChangeInfoViewModel
+            var model = new ChangeInfoViewModel
             {
                 FullName = _userRepo.Get(GetCurrentUserAsync().Result.Id).FullName
             };
@@ -113,6 +113,18 @@ namespace ZRdotnetcore.Controllers
 
             _userRepo.Update(user);
             return RedirectToAction(nameof(Index), new { Message = ManageMessageId.ChangeInfoSuccess });
+        }
+
+        //
+        // GET: /Manage/GetAccountId
+        [HttpGet]
+        public IActionResult GetAccountId()
+        {
+            var model = new GetAccountIdViewModel
+            {
+                UserId = _userRepo.Get(GetCurrentUserAsync().Result.Id).UserId
+            };
+            return PartialView(model);
         }
 
         #region Helpers

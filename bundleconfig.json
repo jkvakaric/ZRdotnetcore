@@ -22,6 +22,17 @@
     "sourceMap": false
   },
   {
+    "outputFileName": "wwwroot/js/datatables-moment.min.js",
+    "inputFiles": [
+      "wwwroot/js/datatables-moment.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
     "outputFileName": "wwwroot/css/datatables.min.css",
     "inputFiles": [
       "wwwroot/lib/datatables.net*/css/*.min.css"

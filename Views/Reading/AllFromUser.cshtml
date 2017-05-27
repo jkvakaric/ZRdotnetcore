@@ -49,6 +49,7 @@
 
 <div class="text-center">
     <a id="fullreadstbl-del" class="btn btn-primary">DELETE</a>
+    <a id="fullreadstbl-delbyname" class="btn btn-primary">DELETE BY NAME</a>
 </div>
 
 <div id="modal-del-r" aria-hidden="true" aria-labelledby="modal-del-r-label" role="dialog" tabindex="-1" class="modal fade">
@@ -57,11 +58,21 @@
     </div>
 </div>
 
+<div id="modal-delbyname-r" aria-hidden="true" aria-labelledby="modal-delbyname-r-label" role="dialog" tabindex="-1" class="modal fade">
+    <div class="modal-dialog">
+        <div id="modal-delbyname-r-content" class="modal-content"></div>
+    </div>
+</div>
+
 @section Scripts {
     @{ await Html.RenderPartialAsync("_DataTablesScriptsPartial"); }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     <script>
         $(document).ready(function () {
             $('#modal-del-r').modal({ show: false });
+            $('#modal-delbyname-r').modal({ show: false });
+
+            $.fn.dataTable.moment('M/D/YYYY H:mm:ss');
 
             var table = $('#fullreadstbl').DataTable({
                 language: {
@@ -88,6 +99,17 @@
                         }
                     });
                 } else alert('You must select one row to perform this action!');
+            });
+
+            $('#fullreadstbl-delbyname').on('click', function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/Reading/DeleteFromAllByName",
+                    success: function (response) {
+                        $('#modal-delbyname-r-content').html(response);
+                        $('#modal-delbyname-r').modal('show');
+                    }
+                });
             });
         });
     </script>

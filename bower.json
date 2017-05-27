@@ -11,6 +11,7 @@
     "datatables.net": "^1.10.15",
     "datatables.net-bs": "^2.1.1",
     "datatables.net-select": "^1.2.2",
-    "datatables.net-select-bs": "^1.2.2"
+    "datatables.net-select-bs": "^1.2.2",
+    "moment": "^2.18.1"
   }
 }

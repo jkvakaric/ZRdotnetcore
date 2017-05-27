@@ -4,6 +4,16 @@
     <UserSecretsId>aspnet-ZRdotnetcore-D174313E-5E4F-4485-84E8-F53E95F833FB</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="wwwroot\js\datatables-moment.js" />
+    <Content Include="wwwroot\js\datatables-moment.min.js" />
+    <Content Include="wwwroot\js\site - Copy.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="wwwroot\js\site - Copy.min.js">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="2.4.337" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />

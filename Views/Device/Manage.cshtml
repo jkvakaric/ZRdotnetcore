@@ -101,6 +101,8 @@
             $('#modal-del-ar').modal({ show: false });
             $('#modal-info-ar').modal({ show: false });
 
+            $.fn.dataTable.moment('M/D/YYYY H:mm:ss');
+
             var table = $('#activereadstbl').DataTable({
                 language: {
                     search: "_INPUT_",

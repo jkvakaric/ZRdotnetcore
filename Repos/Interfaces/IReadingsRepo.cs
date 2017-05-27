@@ -15,5 +15,7 @@ namespace ZRdotnetcore.Repos.Interfaces
         ReadingType GetReadingType(string readingTypeId);
         void Delete(Reading reading);
         Reading GetReading(string readingId);
+        List<Reading> GetReadingsByName(string readingName);
+        void DeleteByName(string readingName);
     }
 }

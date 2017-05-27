@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -201,6 +203,7 @@ namespace ZRdotnetcore.Controllers
         {
             ViewData["StatusMessage"] =
                 rmessage == ReadingMessageId.ReadingNotFound ? "Reading could not be found."
+                : rmessage == ReadingMessageId.NoReadingsFound ? "No Readings were found."
                 : rmessage == ReadingMessageId.NotAuthorized ? "You are not authorized to perform this action."
                 : rmessage == ReadingMessageId.DeleteReadingSuccess ? "Reading has been deleted successfully."
                 : rmessage == ReadingMessageId.DeleteReadingFailed ? "Reading could not be deleted."
@@ -348,6 +351,46 @@ namespace ZRdotnetcore.Controllers
             }
         }
 
+        //
+        // GET: /Reading/DeleteFromAllByName
+        [HttpGet]
+        public IActionResult DeleteFromAllByName()
+        {
+            return PartialView();
+        }
+
+        //
+        // POST: /Reading/DeleteFromAllByName
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteFromAllByName(ReadingDeleteFromAllByNameViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return RedirectToAction("AllFromUser", "Reading", new { rmessage = ReadingMessageId.ValidationFailed });
+
+            try
+            {
+                var readings = _readingsRepo.GetReadingsByName(model.Name);
+
+                if (readings == null || readings.Count == 0)
+                    return RedirectToAction("AllFromUser", "Reading", new { rmessage = ReadingMessageId.NoReadingsFound });
+
+                string authUserId = GetCurrentUserAsync().Result.Id;
+                if (readings.Any(reading => !reading.Owner.UserId.Equals(authUserId)))
+                    return RedirectToAction("AllFromUser", "Reading", new { rmessage = ReadingMessageId.NotAuthorized });
+
+                _readingsRepo.DeleteByName(model.Name);
+
+                _logger.LogInformation("User deleted several Readings by name.");
+                return RedirectToAction("AllFromUser", "Reading", new { rmessage = ReadingMessageId.DeleteReadingSuccess });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return RedirectToAction("AllFromUser", "Reading", new { rmessage = ReadingMessageId.DeleteReadingFailed });
+            }
+        }
+
         #region Helpers
 
         public enum ActiveReadingMessageId
@@ -367,6 +410,7 @@ namespace ZRdotnetcore.Controllers
         public enum ReadingMessageId
         {
             ReadingNotFound,
+            NoReadingsFound,
             NotAuthorized,
             DeleteReadingSuccess,
             DeleteReadingFailed,

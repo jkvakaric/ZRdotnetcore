@@ -89,5 +89,19 @@ namespace ZRdotnetcore.Repos
                 .SingleOrDefault(r => readingId.Equals(r.Id));
             return reading;
         }
+
+        public List<Reading> GetReadingsByName(string readingName)
+        {
+            return _context.Readings
+                .Include(r => r.Owner)
+                .Where(r => readingName.Equals(r.Name))
+                .ToList();
+        }
+
+        public void DeleteByName(string readingName)
+        {
+            _context.Readings.RemoveRange(GetReadingsByName(readingName));
+            _context.SaveChanges();
+        }
     }
 }

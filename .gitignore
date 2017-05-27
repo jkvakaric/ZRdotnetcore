@@ -2,6 +2,8 @@
 wwwroot/lib/
 wwwroot/css/datatables.min.css
 wwwroot/js/datatables.min.js
+wwwroot/js/datatables-moment.min.js
+wwwroot/js/site.min.js
 
 appsettings.Development.json
 appsettings.Production.json

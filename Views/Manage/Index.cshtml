@@ -16,7 +16,7 @@
     }
 }
 
-<hr/>
+<hr />
 <div class="row">
     <div class="col-xs-12">
         <ul class="list-group">
@@ -28,6 +28,31 @@
             <li class="list-group-item clearfix">Username<span class="badge pull-right">@Model.User.Username</span></li>
             <li class="list-group-item clearfix">Email<span class="badge pull-right">@Model.User.Email</span></li>
         </ul>
-        <a asp-controller="Device" asp-action="Index" class="btn btn-primary btn-block">Devices</a>
+        <a id="getaccountid" class="btn btn-info btn-block">VIEW ACCOUNT ID</a>
     </div>
 </div>
+
+<div id="modal-getaccountid" aria-hidden="true" aria-labelledby="modal-getaccountid-label" role="dialog" tabindex="-1" class="modal fade">
+    <div class="modal-dialog">
+        <div id="modal-getaccountid-content" class="modal-content"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#modal-getaccountid').modal({ show: false });
+
+            $('#getaccountid').on('click', function () {
+                $.ajax({
+                    type: "GET",
+                    url: "/Manage/GetAccountId",
+                    success: function (response) {
+                        $('#modal-getaccountid-content').html(response);
+                        $('#modal-getaccountid').modal('show');
+                    }
+                });
+            });
+        });
+    </script>
+}

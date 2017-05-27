@@ -257,6 +257,7 @@ namespace ZRdotnetcore.Controllers
             {
                 ViewData["StatusMessage"] =
                     rmessage == ReadingController.ReadingMessageId.ReadingNotFound ? "Reading could not be found."
+                    : rmessage == ReadingController.ReadingMessageId.NoReadingsFound ? "No Readings were found."
                     : rmessage == ReadingController.ReadingMessageId.NotAuthorized ? "You are not authorized to perform this action."
                     : rmessage == ReadingController.ReadingMessageId.DeleteReadingSuccess ? "Reading has been deleted successfully."
                     : rmessage == ReadingController.ReadingMessageId.DeleteReadingFailed ? "Reading could not be deleted."
